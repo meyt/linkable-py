@@ -25,7 +25,7 @@ Basic:
 
 .. code-block:: python
 
-      import linkable
+      from linkable import Linkable
 
       text = 'This is test with a #hashtag from @linkable on github.com'
       print(Linkable(text))
@@ -43,10 +43,10 @@ Links list:
 
 .. code-block:: python
 
-      import linkableList
+      from linkable import LinkableList
 
       text = 'This is test with a #hashtag from @linkable on github.com'
-      print(linkableList(text).links)
+      print(LinkableList(text).links)
 
 Output:
 
