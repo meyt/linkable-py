@@ -1,4 +1,4 @@
-linkable-js
+linkable-py
 ===========
 
 .. image:: https://travis-ci.org/meyt/linkable-py.svg?branch=master
