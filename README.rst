@@ -7,6 +7,10 @@ linkable-py
 .. image:: https://coveralls.io/repos/github/meyt/linkable-py/badge.svg?branch=master
     :target: https://coveralls.io/github/meyt/linkable-py?branch=master
 
+.. image:: https://img.shields.io/pypi/pyversions/linkable.svg
+    :target: https://pypi.python.org/pypi/linkable
+
+
 Detect URL, Email, Hashtag and Mention from plain-text and convert into HTML hyperlink.
 
 
