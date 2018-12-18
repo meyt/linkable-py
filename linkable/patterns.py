@@ -4,18 +4,51 @@ import re
 _flags = re.UNICODE | re.IGNORECASE
 ip_middle_octet = r'(\.(1?\d{1,2}|2[0-4]\d|25[0-5]))'
 ip_last_octet = r'(\.([1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))'
+hashtag_punctuations = r'.,/#!‼⁉〰〽$%^&*;:=`~@?-'
+hashtag_starter = r'＃#'
 
-word_pattern = re.compile(r'\S+', _flags)
-word_in_parentheses_pattern = re.compile(r'(?!\()\S+(?=\))', _flags)
-url_scheme_pattern = re.compile(r'\S+://', _flags)
-twitter_mention_pattern = re.compile(r'^@([a-z_])([a-z\d_]*)$', _flags)
-github_mention_pattern = re.compile(r'^@([a-z\d-]+)$', _flags)
-email_pattern = re.compile(r'^[^\s@]+@[^\s@]+\.[^\s@]+$', _flags)
+word_pattern = re.compile(
+    r'\S+', _flags)
+
+word_between_punctuations = re.compile(
+    r'(?!'
+    # Begin brackets
+    r'[({\[⟨《]|'
+    # Begin guillemets
+    r'[<«‹]|'
+    # Begin quotitations
+    r'[‘“\'\"„”]'
+    # Any word else
+    r')\S+(?='
+    # End brackets
+    r'[)}\]⟩》]|'
+    # End guillemets
+    r'[>»›]|'
+    # End quotitation
+    r'[’”\'\"“]'
+    r')'
+)
+
+hashtag_with_end_punctuations = re.compile(
+    r'([' + hashtag_starter + r']\S[^\s' + hashtag_punctuations + r']+)'
+)
+
+url_scheme_pattern = re.compile(
+    r'\S+://', _flags)
+
+twitter_mention_pattern = re.compile(
+    r'^@([a-z_])([a-z\d_]*)$', _flags)
+
+github_mention_pattern = re.compile(
+    r'^@([a-z\d-]+)$', _flags)
+
+email_pattern = re.compile(
+    r'^[^\s@]+@[^\s@]+\.[^\s@]+$', _flags)
 
 hashtag_pattern = re.compile(
     r'^'
     # Start with ＃ or #
-    r'[＃#]'
+    r'[' + hashtag_starter + r']'
     # Escape start with keypad unicode variations
     r'(?!\uFE0F\u20E3)'
     # Escape start with numbers
@@ -23,12 +56,13 @@ hashtag_pattern = re.compile(
     # Escape multiple hash symbols
     r'(?![＃#]+$)'
     # Match hashtag
-    r'(?:'
+    r'('
     # Match any (unicode) characters exclude symbols
-    r'[^\s.,/#!$%^&*;:{\}=`()~@-]+|'
+    r'([^\s{\}()' + hashtag_punctuations + '])+|'
     # Exclude keypad unicode variation
     r'\*\uFE0F\u20E3|'
-    r'#\uFE0F\u20E3)'
+    r'#\uFE0F\u20E3' 
+    r')'
     r'$',
     _flags
 )

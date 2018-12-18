@@ -58,12 +58,30 @@ matches = [
         'one linear demo with google.com URL',
         'one linear demo with <a href="http://google.com">google.com</a> URL',
         dict(hashtags=0, emails=0, urls=1, mentions=0)
+    ],
+    [
+        'is this a #hashtag?',
+        'is this a <a href="/hashtag/#hashtag">#hashtag</a>?',
+        dict(hashtags=1, emails=0, urls=0, mentions=0)
+    ],
+    [
+        'is this a #hashtag? #or_hashtag!!!!!',
+        'is this a <a href="/hashtag/#hashtag">#hashtag</a>? '
+        '<a href="/hashtag/#or_hashtag">#or_hashtag</a>!!!!!',
+        dict(hashtags=2, emails=0, urls=0, mentions=0)
+    ],
+    [
+        'is this a ###hashtag? #or_hashtag!!!!!',
+        'is this a ###hashtag? '
+        '<a href="/hashtag/#or_hashtag">#or_hashtag</a>!!!!!',
+        dict(hashtags=1, emails=0, urls=0, mentions=0)
     ]
 ]
 
 
+# noinspection PyTypeChecker
 @pytest.mark.parametrize('text, output, attributes', matches)
-def test_parser(text, output, attributes):
+def test_parser(text, output, attributes: dict):
     assert Linkable(text) == output
     assert Linkable(text).__repr__() == output
 

@@ -3,14 +3,25 @@ from linkable.helpers import LazyAttribute
 
 
 class Linkable:
+    _validators_list = (
+        'hashtag',
+        'mention',
+        'email',
+        'url'
+    )
 
     def __init__(self, text, mention_style: str='twitter'):
         self.mention_style = mention_style
         self.text = text
-        self.validate_mention = (
-            validators.validate_twitter_mention
-            if self.mention_style == 'twitter' else
-            validators.validate_github_mention
+        self.validators = dict(
+            email=validators.validate_email,
+            url=validators.validate_url,
+            hashtag=validators.validate_hashtag,
+            mention=(
+                validators.validate_twitter_mention
+                if self.mention_style == 'twitter' else
+                validators.validate_github_mention
+            )
         )
 
     def __str__(self):
@@ -27,25 +38,29 @@ class Linkable:
         return self.replace_links(self.text)
 
     def replace_links(self, text):
-        result = patterns.word_pattern.sub(self.replacer, text)
-        result = patterns.word_in_parentheses_pattern.sub(self.replacer, result)
+        result = patterns.word_pattern.sub(
+            self.replacer, text)
+        result = patterns.word_between_punctuations.sub(
+            self.replacer, result)
         return result
 
     def replacer(self, match):
         value = match.group()
 
-        if validators.validate_hashtag(value):
-            return self.replace_hashtag(value)
+        hashtag_match = patterns.hashtag_with_end_punctuations.match(value)
+        if (
+            hashtag_match is not None and
+            self.validators['hashtag'](hashtag_match.group(1))
+        ):
+            return patterns.hashtag_with_end_punctuations.sub(
+                lambda x: self.replace_hashtag(x.group()), value
+            )
 
-        if self.validate_mention(value):
-            return self.replace_mention(value)
-
-        if validators.validate_email(value):
-            return self.replace_email(value)
-
-        if validators.validate_url(value):
-            return self.replace_url(value)
-
+        for validator_name in self._validators_list:
+            if self.validators[validator_name](value) is not False:
+                return getattr(
+                    self, 'replace_%s' % validator_name
+                )(value)
         return value
 
     def replace_hashtag(self, value):
