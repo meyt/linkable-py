@@ -65,6 +65,36 @@ matches = [
         dict(hashtags=1, emails=0, urls=0, mentions=0)
     ],
     [
+        'brackets (@a) {#b} 《@c》 ⟨@d⟩ [@e]?',
+        'brackets '
+        '(<a href="/@a">@a</a>) '
+        '{<a href="/hashtag/#b">#b</a>} '
+        '《<a href="/@c">@c</a>》 '
+        '⟨<a href="/@d">@d</a>⟩ '
+        '[<a href="/@e">@e</a>]?',
+        dict(hashtags=1, emails=0, urls=0, mentions=4)
+    ],
+    [
+        'guillemets ‹@a› <@b> «#c»?',
+        'guillemets '
+        '‹<a href="/@a">@a</a>› '
+        '<<a href="/@b">@b</a>> '
+        '«<a href="/hashtag/#c">#c</a>»?',
+        dict(hashtags=1, emails=0, urls=0, mentions=2)
+    ],
+    [
+        'quotations ‘@a’ “@b” \'#c\' "@d" „@e“ “@f”',
+        'quotations '
+        '‘<a href="/@a">@a</a>’ '
+        '“<a href="/@b">@b</a>” '
+        '\'<a href="/hashtag/#c">#c</a>\' '
+        '"<a href="/@d">@d</a>" '
+        '„<a href="/@e">@e</a>“ '
+        '“<a href="/@f">@f</a>”'
+        ,
+        dict(hashtags=1, emails=0, urls=0, mentions=5)
+    ],
+    [
         'is this a #hashtag? #or_hashtag!!!!!',
         'is this a <a href="/hashtag/#hashtag">#hashtag</a>? '
         '<a href="/hashtag/#or_hashtag">#or_hashtag</a>!!!!!',
