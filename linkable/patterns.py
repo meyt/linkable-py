@@ -16,7 +16,7 @@ word_between_punctuations = re.compile(
     r'[({\[⟨《]|'
     # Begin guillemets
     r'[<«‹]|'
-    # Begin quotitations
+    # Begin quotations
     r'[‘“\'\"„”]'
     # Any word else
     r')\S+(?='
@@ -24,7 +24,7 @@ word_between_punctuations = re.compile(
     r'[)}\]⟩》]|'
     # End guillemets
     r'[>»›]|'
-    # End quotitation
+    # End quotations
     r'[’”\'\"“]'
     r')'
 )
