@@ -29,8 +29,8 @@ valid_items = (
     'http://j.mp',
     'ftp://foo.bar/baz',
     'http://foo.bar/?q=Test%20URL-encoded%20stuff',
-    'http://مثال.إختبار',
-    'http://例子.测试',
+    'http://مثال.ایران',
+    'http://例子.家電',
     'http://-.~_!$&()*+,;=:%40:80%2f::::::@example.com',
     'http://1337.net',
     'http://a.b-c.de',
@@ -95,7 +95,8 @@ invalid_items = (
     'http://example.com/">user@example.com',
     'http://[2010:836B:4179::836B:4179',
     'http://2010:836B:4179::836B:4179',
-    'http://2010:836B:4179::836B:4179:80/index.html'
+    'http://2010:836B:4179::836B:4179:80/index.html',
+    '1.awkwa'
 )
 
 

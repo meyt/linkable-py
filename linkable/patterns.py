@@ -1,7 +1,17 @@
 
 import re
+from linkable.tld_list import tld_list
 
 _flags = re.UNICODE | re.IGNORECASE
+
+# Extracted from: https://data.iana.org/TLD/tlds-alpha-by-domain.txt
+tld_list = tld_list.split('\n')
+tld_list = tuple(map(
+    lambda x: x[4:].encode().decode('punycode') if x.startswith('XN--') else x,
+    tld_list
+))
+tld_list = '|'.join(tld_list)
+
 ip_middle_octet = r'(\.(1?\d{1,2}|2[0-4]\d|25[0-5]))'
 ip_last_octet = r'(\.([1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))'
 hashtag_punctuations = r'.,/#!‼⁉〰〽$%^&*;:=`~@?-'
@@ -133,7 +143,7 @@ url_pattern = re.compile(
     # domain name
     r'(\.([a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*'
     # TLD identifier
-    r'(\.([a-z\u00a1-\uffff]{2,}))'
+    r'(\.(?:' + tld_list + r'|test|localhost))'
     r')' 
     # port number
     r'(:\d{2,5})?' 
