@@ -102,8 +102,13 @@ matches = [
     ],
     [
         'is this a ###hashtag? #or_hashtag!!!!!',
-        'is this a ###hashtag? '
+        'is this a ##<a href="/hashtag/#hashtag">#hashtag</a>? '
         '<a href="/hashtag/#or_hashtag">#or_hashtag</a>!!!!!',
+        dict(hashtags=2, emails=0, urls=0, mentions=0)
+    ],
+    [
+        'is this a#hashtag?',
+        'is this a<a href="/hashtag/#hashtag">#hashtag</a>?',
         dict(hashtags=1, emails=0, urls=0, mentions=0)
     ]
 ]

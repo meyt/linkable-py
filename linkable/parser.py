@@ -38,24 +38,28 @@ class Linkable:
         return self.replace_links(self.text)
 
     def replace_links(self, text):
-        result = patterns.word_pattern.sub(
-            self.replacer, text)
-        result = patterns.word_between_punctuations.sub(
-            self.replacer, result)
-        return result
+        return patterns.word_pattern.sub(self.first_replacer, text)
 
-    def replacer(self, match):
+    def first_replacer(self, match):
         value = match.group()
-
-        hashtag_match = patterns.hashtag_with_end_punctuations.match(value)
-        if (
-            hashtag_match is not None and
-            self.validators['hashtag'](hashtag_match.group(1))
-        ):
-            return patterns.hashtag_with_end_punctuations.sub(
-                lambda x: self.replace_hashtag(x.group()), value
+        if patterns.brackets_pattern.search(value) is not None:
+            return patterns.brackets_pattern.sub(
+                self.second_replacer,
+                value
             )
+        return self.second_replacer(match)
 
+    def second_replacer(self, match):
+        value = match.group()
+        if patterns.dirty_hashtag_pattern.search(value) is not None:
+            return patterns.dirty_hashtag_pattern.sub(
+                self.main_replacer,
+                value
+            )
+        return self.main_replacer(match)
+
+    def main_replacer(self, match):
+        value = match.group()
         for validator_name in self._validators_list:
             if self.validators[validator_name](value) is not False:
                 return getattr(

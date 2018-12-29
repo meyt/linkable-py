@@ -7,20 +7,19 @@ _flags = re.UNICODE | re.IGNORECASE
 # Extracted from: https://data.iana.org/TLD/tlds-alpha-by-domain.txt
 tld_list = tld_list.split('\n')
 tld_list = tuple(map(
-    lambda x: x[4:].encode().decode('punycode') if x.startswith('XN--') else x,
+    lambda i: i[4:].encode().decode('punycode') if i.startswith('XN--') else i,
     tld_list
 ))
 tld_list = '|'.join(tld_list)
 
 ip_middle_octet = r'(\.(1?\d{1,2}|2[0-4]\d|25[0-5]))'
 ip_last_octet = r'(\.([1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))'
-hashtag_punctuations = r'.,/#!‼⁉〰〽$%^&*;:=`~@?-'
-hashtag_starter = r'＃#'
+hashtag_punctuations = r'.,/＃#!‼⁉〰〽$%^&*;:=`~@?-'
 
 word_pattern = re.compile(
     r'\S+', _flags)
 
-word_between_punctuations = re.compile(
+brackets_pattern = re.compile(
     r'(?!'
     # Begin brackets
     r'[({\[⟨《]|'
@@ -39,10 +38,6 @@ word_between_punctuations = re.compile(
     r')'
 )
 
-hashtag_with_end_punctuations = re.compile(
-    r'([' + hashtag_starter + r']\S[^\s' + hashtag_punctuations + r']+)'
-)
-
 url_scheme_pattern = re.compile(
     r'\S+://', _flags)
 
@@ -58,7 +53,7 @@ email_pattern = re.compile(
 hashtag_pattern = re.compile(
     r'^'
     # Start with ＃ or #
-    r'[' + hashtag_starter + r']'
+    r'[＃#]'
     # Escape start with keypad unicode variations
     r'(?!\uFE0F\u20E3)'
     # Escape start with numbers
@@ -74,6 +69,16 @@ hashtag_pattern = re.compile(
     r'#\uFE0F\u20E3' 
     r')'
     r'$',
+    _flags
+)
+
+dirty_hashtag_pattern = re.compile(
+    # Negative lookahead any invisible character
+    r'(?!\s)'
+    # Any hashtag-like word exclude punctuation at end
+    r'([＃#][^' + hashtag_punctuations + ']+)'
+    # Positive lookahead to any character
+    r'(?=.*)',
     _flags
 )
 
