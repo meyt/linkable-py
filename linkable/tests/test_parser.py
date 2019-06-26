@@ -116,6 +116,17 @@ matches = [
         'is this #hashtag#another',
         'is this #hashtag#another',
         dict(hashtags=0, emails=0, urls=0, mentions=0)
+    ],
+    # Start with hashtag
+    [
+        '#hashtag is coming...',
+        '<a href="/hashtag/#hashtag">#hashtag</a> is coming...',
+        dict(hashtags=1, emails=0, urls=0, mentions=0)
+    ],
+    [
+        '#hashtag! is coming...',
+        '<a href="/hashtag/#hashtag">#hashtag</a>! is coming...',
+        dict(hashtags=1, emails=0, urls=0, mentions=0)
     ]
 ]
 
