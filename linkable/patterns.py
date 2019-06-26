@@ -74,11 +74,11 @@ hashtag_pattern = re.compile(
 
 dirty_hashtag_pattern = re.compile(
     # Negative lookahead any invisible character
-    r'(?!\s)'
+    r'(?:^|(?<=\s|＃|#))'
     # Any hashtag-like word exclude punctuation at end
-    r'([＃#][^' + hashtag_punctuations + ']+)'
+    r'([＃#][^\s' + hashtag_punctuations + ']+)'
     # Positive lookahead to any character
-    r'(?=.*)',
+    r'(?=\s|$|[' + hashtag_punctuations.replace('＃#', '') + '])',
     _flags
 )
 

@@ -106,10 +106,16 @@ matches = [
         '<a href="/hashtag/#or_hashtag">#or_hashtag</a>!!!!!',
         dict(hashtags=2, emails=0, urls=0, mentions=0)
     ],
+    # Tags should separate with spaces
     [
         'is this a#hashtag?',
-        'is this a<a href="/hashtag/#hashtag">#hashtag</a>?',
-        dict(hashtags=1, emails=0, urls=0, mentions=0)
+        'is this a#hashtag?',
+        dict(hashtags=0, emails=0, urls=0, mentions=0)
+    ],
+    [
+        'is this #hashtag#another',
+        'is this #hashtag#another',
+        dict(hashtags=0, emails=0, urls=0, mentions=0)
     ]
 ]
 
