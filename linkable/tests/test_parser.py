@@ -1,5 +1,6 @@
 import pytest
 from linkable import Linkable, LinkableList
+from linkable.tests.helpers.emoji import Emojies
 
 matches = [
     [
@@ -106,7 +107,7 @@ matches = [
         '<a href="/hashtag/#or_hashtag">#or_hashtag</a>!!!!!',
         dict(hashtags=2, emails=0, urls=0, mentions=0)
     ],
-    # Tags should separate with spaces
+    # Hashtags should separate with spaces
     [
         'is this a#hashtag?',
         'is this a#hashtag?',
@@ -127,6 +128,12 @@ matches = [
         '#hashtag! is coming...',
         '<a href="/hashtag/#hashtag">#hashtag</a>! is coming...',
         dict(hashtags=1, emails=0, urls=0, mentions=0)
+    ],
+    # Hashtag must detected with emoji at end
+    [
+        'Wow its #hashtag😍!',
+        'Wow its <a href="/hashtag/#hashtag">#hashtag</a>😍!',
+        dict(hashtags=1, emails=0, urls=0, mentions=0)
     ]
 ]
 
@@ -145,3 +152,25 @@ def test_parser(text, output, attributes: dict):
     assert len(linkable_list.links) == sum(
         map(lambda x: attributes[x], attributes.keys())
     )
+
+
+numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+punctuation_emoji = ['‼', '〽', '〰', '⁉', '‼']
+punctuation = ['*', '#']
+
+
+emojies = Emojies()
+emojies.load_from_testfile()
+
+
+@pytest.mark.parametrize('item', emojies)
+def test_hashtag_with_emoji_at_end(item):
+    item = item.__repr__()
+    exclusions = numbers + punctuation_emoji + punctuation
+    for x in exclusions:
+        if x in item:
+            return
+
+    text = 'Wow its #hashtag%s!' % item
+    output = 'Wow its <a href="/hashtag/#hashtag">#hashtag</a>%s!' % item
+    assert Linkable(text).__repr__() == output

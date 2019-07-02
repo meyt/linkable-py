@@ -1,7 +1,6 @@
 
 import re
 from linkable.tld_list import tld_list
-from linkable import emoji
 
 _flags = re.UNICODE | re.IGNORECASE
 
@@ -77,14 +76,11 @@ dirty_hashtag_pattern = re.compile(
     # Negative lookahead any invisible character
     r'(?:^|(?<=\s|＃|#))'
     # Any hashtag-like word exclude punctuation at end
-    r'('
-    r'[＃#](?![＃#])(?:' 
-    r'.(?!'
-    r'[\s' + hashtag_punctuations.replace('＃#', '') + ']|' + emoji.pattern +
-    r'))*.)',
+    r'([＃#][^\s' + hashtag_punctuations + ']+)'
+    # Positive lookahead to any character
+    r'(?=\s|$|[' + hashtag_punctuations.replace('＃#', '') + '])',
     _flags
 )
-
 
 # from: https://github.com/kvesteri/validators/blob/master/validators/url.py
 url_pattern = re.compile(
